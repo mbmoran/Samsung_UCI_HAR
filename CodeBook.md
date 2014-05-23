@@ -146,8 +146,8 @@ into the R global environment using the table function, assign file names, clean
 - read the first file features.txt which contains the measure variables, column names
 - filefeatures<-read.table("~/Actuarial/Coursera/Data Science/Getting and Cleaning Data/Project/getdata-projectfiles-UCI HAR Dataset/UCI HAR Dataset/features.txt")
 
-##### STEP 1.1 Clean filefeatures names of columns so that there are no (), no commas and no hyphens. 
-Do this using the gsub command like follows gsub("\\(","",filefeatures$V2)). Then rename the columns using column name "measures"
+##### STEP 1.1 Clean filefeatures names of columns so that there are no (), no commas and no hyphens.
+The rationale, is to align with Google recommended R naming standards (see README) Do this using the gsub command like follows gsub("\\(","",filefeatures$V2)). Then rename the columns using column name "measures"
 
 ##### Step 1.2 Load remaining 6 raw data files and assign column names as follows
 
@@ -172,7 +172,8 @@ Do this using the gsub command like follows gsub("\\(","",filefeatures$V2)). The
 - colnames(ActivityVector)[1] <- "activityID"
 - colnames(ActivityVector)[2] <- "activity"
 
-##### STEP 4: Create and append 2 new columns to filetest and filetrain, activityID and subjectID
+#### STEP 4: Create and append 2 new columns to filetest and filetrain, activityID and subjectID
+
 ##### Step 4.1 Append fileActivityTest to filetest and fileActivityTrain to filetrain and rename column heading of the ActivityID for better clarity
 - filetest<-cbind(fileActivityTest$activityID,filetest)
 - filetrain<-cbind(fileActivityTrain$activityID,filetrain)
@@ -185,7 +186,7 @@ Do this using the gsub command like follows gsub("\\(","",filefeatures$V2)). The
 - colnames(mergedTest)[1] <- "subjectID"
 - colnames(mergedTrain)[1] <- "subjectID"
 
-##### STEP 5: Merge the test and the train datasets by using rbind to append mergedTrain with mergedTest.
+#### STEP 5: Merge the test and the train datasets by using rbind to append mergedTrain with mergedTest.
 - FinalData<-rbind(mergedTest,mergedTrain)
 
 #### STEP 6: Create list of variables which will be written to a csv file for easy input into the CodeBook
