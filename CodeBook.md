@@ -22,9 +22,12 @@ Document Purpose:  The purpose of this CodeBook, to provide:
 
 - An identifier of the subject who carried out the experiment.
 - An activityID label. 
-- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration.
-- Triaxial Angular velocity from the gyroscope. 
-- A 561-feature vector with time and frequency domain variables. Time variable start with "t", frequency "f"
+- 86 columns with mean of the original 561-feature vector, time and frequency domain variables. Time variable start with "t", frequency "f". Only measurements of mean or standard deviation were chosen.
+- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration. These variables have "acc" in the name. For example, meantBodyAccmeanX
+- Triaxial Angular velocity from the gyroscope. These have "gryo" in the name For example meantBodyGyromeanX
+- X = dimension of forward movement e.g. walking forward and backward
+- Y = dimension of lateral movement e.g. walking left to right
+- Z = dimension of upward/downward movement e.g. walking up and down stairs
 
 
 subjectIds are a sequence of integers from 1 to 30.
@@ -38,6 +41,7 @@ The activity field contains the 6 activity names, original source raw data file 
 - 5 standing
 - 6 laying
 
+Units:  The 86 measurement columns (number 3-89) have been normalized to standardized values between (-1,1) 
 
 Column:Field Name:Field Type:Values in the First 5 rows
 - 1 :subjectID                            : int  1 1 1 1 1 1 2 2 2 2 ...
@@ -133,3 +137,85 @@ Column:Field Name:Field Type:Values in the First 5 rows
 
 Because the project description/instructions were to retain only the analysis variables which contained either a mean or a standard deviation measurement, only 86 variables (columns) satisfied this criterion out of the 561 original columns. With the addition of 3 factor/ID columns (subjectID, activityID, activity), the final dimensions of the TidyDataSet:  
 180 rows x 89 columns.
+
+### III Detailed Steps to Transform Raw Data to Final Tidy Data 
+
+#### STEP 1.  After downloading and unzipping the zip file from the URL, read the raw data files
+into the R global environment using the table function, assign file names, clean variable names
+
+- read the first file features.txt which contains the measure variables, column names
+- filefeatures<-read.table("~/Actuarial/Coursera/Data Science/Getting and Cleaning Data/Project/getdata-projectfiles-UCI HAR Dataset/UCI HAR Dataset/features.txt")
+
+##### STEP 1.1 Clean filefeatures names of columns so that there are no (), no commas and no hyphens. 
+Do this using the gsub command like follows gsub("\\(","",filefeatures$V2)). Then rename the columns using column name "measures"
+
+##### Step 1.2 Load remaining 6 raw data files and assign column names as follows
+
+- filetest  read raw file X_test.txt use column names filefeaturesClean$measures
+- filetrain read raw file X_train.txt use column names filefeaturesClean$measures
+
+- fileSubjectTest read raw file subject_test.txt use column names col.names=c("subjectID")
+- fileSubjectTrain read raw file subject_train.txt use column names col.names=c("subjectID")
+
+- fileActivityTest read raw file y_test.txt use column name "activityID"
+- fileActivityTrain read raw file y_train.txt use column name "activityID"
+
+#### STEP 2: Remove columns (ie measurement variables) from filetest and filetrain that do not contain either mean or standard deviation in the column name. Do this using the grep function and then subset the filetest and filetrain using the whichcols logical vector
+- mynames<-c("mean","std")
+- whichcols<-grep(paste(mynames, collapse='|'), filefeaturesClean$measures, ignore.case=TRUE)
+- filetest<-filetest[,whichcols]
+- filetrain<-filetrain[,whichcols]
+
+#### STEP 3: Create Activity vector, character values 1 to 6 that will be used to merge with filetest and filetrain
+- ActivityVector<-as.vector(c("walking","walking upstairs","walking downstairs","sitting","standing","laying"))
+- ActivityVector<-cbind(c("1","2","3","4","5","6"),ActivityVector)
+- colnames(ActivityVector)[1] <- "activityID"
+- colnames(ActivityVector)[2] <- "activity"
+
+##### STEP 4: Create and append 2 new columns to filetest and filetrain, activityID and subjectID
+##### Step 4.1 Append fileActivityTest to filetest and fileActivityTrain to filetrain and rename column heading of the ActivityID for better clarity
+- filetest<-cbind(fileActivityTest$activityID,filetest)
+- filetrain<-cbind(fileActivityTrain$activityID,filetrain)
+- colnames(filetest)[1] <- "activityID"
+- colnames(filetrain)[1] <- "activityID"
+
+##### Step 4.2 Create and append 1 new column, subjectID fileSubjectTest to filetest and fileSubjectTrain to filetrain and rename column heading of the SubjectId for better clarity. Note this step is done after step 4 so that the subjectID can be the very first column in the final dataset
+- mergedTest<-cbind(fileSubjectTest$subjectID,filetest)
+- mergedTrain<-cbind(fileSubjectTrain$subjectID,filetrain)
+- colnames(mergedTest)[1] <- "subjectID"
+- colnames(mergedTrain)[1] <- "subjectID"
+
+##### STEP 5: Merge the test and the train datasets by using rbind to append mergedTrain with mergedTest.
+- FinalData<-rbind(mergedTest,mergedTrain)
+
+#### STEP 6: Create list of variables which will be written to a csv file for easy input into the CodeBook
+- listOfVariables <- data.frame(names(FinalData))
+- write.csv(listOfVariables,file="listOfVariables.csv")
+
+#### STEP 7: Create TidyData 
+By melting the FinalData set into one record per measurement length-wise SubjectID x ActivityID permutation and Casting the melted data width-wise a mean variable for each of the analysis variables
+- mymelt<-as.data.frame(melt(data=FinalData, id.vars=1:2,measured=3:88))
+- TidyData<-as.data.frame(cast(mymelt, subjectID+activityID ~ variable, mean))
+
+##### Step 7.1 rename measurement columns 3 to 88 to start with mean because from this point onward TidyData has mean measurements not original raw data
+- names(TidyData)<-paste("mean",names(TidyData),sep="")
+- colnames(TidyData)[1] <- "subjectID"
+- colnames(TidyData)[2] <- "activityID"
+
+#### STEP 8: Merge ActivityVector with TidyData to create a new column in the data sets filetest and filetrain, called "Activity"
+- TidyData<-merge(ActivityVector,TidyData,by.x="activityID",by.y="activityID")
+- TidyDataSet<-as.data.frame(cbind(TidyData$subjectID,TidyData$activityID,TidyData$activity,TidyData[,4:89]))
+- colnames(TidyDataSet)[1] <- "subjectID"
+- colnames(TidyDataSet)[2] <- "activityID"
+- colnames(TidyDataSet)[3] <- "activity"
+- TidyDataSet<-arrange(TidyDataSet,subjectID,activityID,activity)
+
+#### STEP 9: Write TidyDataSet to txt file
+write.csv(TidyDataSet,file="TidyDataSet.txt")
+
+#### SETP 10: Optional Exploratory Data Analysis
+- use the all() function with colSums() and is.na() to check for any variables that are NA. If=0 is true then there are no NAs
+- use table() function to cross tabulate the number of observations for each subjectIDxactivityID permutation
+- use str() and summary() functions to output summary statistics of the final TidyDataset for documentation/codebook purposes
+- Table and str output to the console, but summary output is saved in variable named s2 and written to "summaryS2.csv"
+
