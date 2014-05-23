@@ -1,23 +1,23 @@
-#Title Project:  Coursera Course - "Getting and Cleaning Data"
-##File: CodeBook.md
-##Document Last Update Date: May 23, 2014
+##Title Project:  Coursera Course - "Getting and Cleaning Data"
+###File: CodeBook.md
+###Document Last Update Date: May 23, 2014
 ========================================================
 
-##I.  INTRODUCTION
+###I.  INTRODUCTION
 
 Project Purpose: The course project purpose is to take a series of raw data files containing smart phone activity/motion measurements (Samsung Galaxy S II) available from a public website (UIC Machine Learning) and using an R script and the tools learned in the course, to read, clean and create a "tidy data set" in a proscribed format, to be ready/usable for a future data analysis project.  
 
 
 Document Purpose:  The purpose of this CodeBook, to provide:
 
-*I  Introduction
-*II TidyDataSet.txt file specifications, field names, length, units, description 
-*III Detailed Steps to Transform Raw Data to Final Tidy Data 
+- I  Introduction
+- II TidyDataSet.txt file specifications, field names, length, units, description 
+- III Detailed Steps to Transform Raw Data to Final Tidy Data 
 
-##II.  TidyDataSet.txt File Specification
+###II.  TidyDataSet.txt File Specification
 
 
-For each record it is provided:
+####For each record it is provided:
 ======================================
 
 - An identifier of the subject who carried out the experiment.
@@ -28,18 +28,18 @@ For each record it is provided:
 
 
 subjectIds are a sequence of integers from 1 to 30.
-1,2,3...30
+- 1,2,3...30
 
-activity field contains the 6 activity names, original source raw data file activity_labels.txt file and are as follows:
-1 walking
-2 walking_upstairs
-3 walking_downstairs
-4 sitting
-5 standing
-6 laying
+The activity field contains the 6 activity names, original source raw data file activity_labels.txt:
+- 1 walking
+- 2 walking_upstairs
+- 3 walking_downstairs
+- 4 sitting
+- 5 standing
+- 6 laying
 
 
-Column:Field Name:Field Type:Values in the First 5 rows
+- Column:Field Name:Field Type:Values in the First 5 rows
  1 :subjectID                            : int  1 1 1 1 1 1 2 2 2 2 ...
  2 :activityID                           : Factor w/ 6 levels "1","2","3","4",..: 1 2 3 4 5 6 1 2 3 4 ...
  3 :activity                             : Factor w/ 6 levels "laying","sitting",..: 4 6 5 2 3 1 4 6 5 2 ...
