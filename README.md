@@ -13,14 +13,14 @@ Project Purpose: The course project purpose is to take a series of raw data file
 The project has 4 deliverables contained in the following Github repository
 Github Repo Name: Samsung_UCI_HAR_Dataset_Repo:  
 
-Deliverables (4 Files)
-####File Name	Description
-####1.  run_analysis.R	R Script containing "R" code used to go from raw data to tidy data
-####2.  README.md	Readme file containing a description of the repo and course project
-####3.  CodeBook.md	Code book describing the specifications and step-by-step process used to derive the final dataset from #the raw data. Includes rationale for all changes/cleaning/renaming of variables
-####4.  TidyDataSet.txt	Final tidy data in txt format, created by the R script
+#### Deliverables (4 Files)
+#### File Name	Description
+- 1.  run_analysis.R	R Script containing "R" code used to go from raw data to tidy data
+- 2.  README.md	Readme file containing a description of the repo and course project
+- 3.  CodeBook.md	Code book describing the specifications and step-by-step process used to derive the final dataset from #the raw data. Includes rationale for all changes/cleaning/renaming of variables
+- 4.  TidyDataSet.txt	Final tidy data in txt format, created by the R script
 
-PROJECT DESCRIPTION (For Peer Evaluation):
+#### PROJECT DESCRIPTION (For Peer Evaluation):
 
  Create one R script called run_analysis.R that does the following. 
 
