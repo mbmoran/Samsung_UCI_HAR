@@ -41,9 +41,10 @@ The activity field contains the 6 activity names, original source raw data file 
 - 5 standing
 - 6 laying
 
-Units:  The 86 measurement columns (number 3-89) have been normalized to standardized values between (-1,1) 
+Units:  The 86 measurement columns (number 3-89) have been normalized to standardized values between (-1,1)
+and have R type num = numeric
 
-Column:Field Name:Field Type:Values in the First 5 rows
+Column:  Field Name:                    Field Type:           Values in the First 5 rows
 - 1 :subjectID                            : int  1 1 1 1 1 1 2 2 2 2 ...
 - 2 :activityID                           : Factor w/ 6 levels "1","2","3","4",..: 1 2 3 4 5 6 1 2 3 4 ...
 - 3 :activity                             : Factor w/ 6 levels "laying","sitting",..: 4 6 5 2 3 1 4 6 5 2 ...
@@ -212,7 +213,8 @@ By melting the FinalData set into one record per measurement length-wise Subject
 - TidyDataSet<-arrange(TidyDataSet,subjectID,activityID,activity)
 
 #### STEP 9: Write TidyDataSet to txt file
-write.csv(TidyDataSet,file="TidyDataSet.txt")
+This file will have comma delimeters but extention is txt to match the file type of the original raw data. The first row contains comma delimeted column names
+- write.csv(TidyDataSet,file="TidyDataSet.txt")
 
 #### SETP 10: Optional Exploratory Data Analysis
 - use the all() function with colSums() and is.na() to check for any variables that are NA. If=0 is true then there are no NAs
